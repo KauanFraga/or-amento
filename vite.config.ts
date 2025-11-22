@@ -17,3 +17,23 @@ export default defineConfig({
     }
   }
 });
+```
+
+5. Clique em **"Commit changes"**
+
+### Passo 4: Deploy
+
+1. Volte ao Vercel
+2. Clique em **Deploy** (ou vá em Deployments → Redeploy)
+
+---
+
+## Resumo visual:
+```
+❌ ERRADO:
+Key: projects/36140631926
+Value: I9JU23NF394R6HH
+
+✅ CORRETO:
+Key: GEMINI_API_KEY
+Value: AIzaSyxxxxxxxxxxxxxxxxxx (sua chave real)
