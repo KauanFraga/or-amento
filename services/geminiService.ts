@@ -1,7 +1,6 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { Product } from '../types';
 
-// Define the response schema for structured output
 const itemMatchSchema: Schema = {
   type: Type.OBJECT,
   properties: {
@@ -23,15 +22,15 @@ export const matchQuoteItems = async (
   catalog: Product[], 
   customerRequest: string
 ): Promise<any[]> => {
-  if (!process.env.API_KEY) {
-    throw new Error("API Key not found");
+  
+  const apiKey = process.env.GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY not found. Please set the environment variable.");
   }
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey });
 
-  // Simplify catalog to reduce token usage, sending only description strings
-  // In a real production app with 10k+ items, we would use embeddings/vector search first.
-  // Since the user's file is ~600 items, it fits easily in context.
   const catalogList = catalog.map(p => p.description).join('\n');
 
   const prompt = `
@@ -41,12 +40,10 @@ export const matchQuoteItems = async (
     ---
     ${catalogList}
     ---
-
     ABAIXO ESTÁ O PEDIDO DO CLIENTE (Texto bruto):
     ---
     ${customerRequest}
     ---
-
     SUA TAREFA:
     Para cada item solicitado pelo cliente, encontre a CORRESPONDÊNCIA MAIS PROVÁVEL no catálogo.
     
@@ -67,7 +64,7 @@ export const matchQuoteItems = async (
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
-        temperature: 0.1, // Low temperature for deterministic matching
+        temperature: 0.1,
       },
     });
 
